@@ -3,11 +3,15 @@ import os from "os";
 
 /**
  * Converts an absolute path to Claude's directory encoding format.
- * Claude encodes paths by replacing all slashes with hyphens.
- * Example: /Users/eshao/mnt/misc → -Users-eshao-mnt-misc
+ * Claude encodes paths by replacing slashes with hyphens, with special
+ * handling for hidden directories (starting with '.') which use '--'.
+ * Examples:
+ *   /Users/eshao/mnt/misc → -Users-eshao-mnt-misc
+ *   /Users/eshao/.bin/claude → -Users-eshao--bin-claude
+ *   /Users/eshao/mnt/.config/.claude/projects → -Users-eshao-mnt--config--claude-projects
  */
 export function encodePathForClaude(absolutePath: string): string {
-	return absolutePath.replace(/\//g, "-");
+	return absolutePath.replace(/\/\./g, "--").replace(/\//g, "-");
 }
 
 /**
